@@ -8,19 +8,36 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ysanjeet535.weddemo_.R
 import com.ysanjeet535.weddemo_.data.AlphaNum
 
-class AlphaNumAdapter(var alphaNums : List<AlphaNum>) : RecyclerView.Adapter<AlphaNumAdapter.AlphaNumViewHolder>() {
+class AlphaNumAdapter(var alphaNums : List<AlphaNum>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlphaNumViewHolder {
+    private val TYPE_HEADER : Int = 0
+    private val TYPE_LIST : Int = 1
+
+    override fun getItemViewType(position: Int): Int {
+        if(position == 0)
+            return TYPE_HEADER
+        return TYPE_LIST
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        if(viewType == TYPE_HEADER)
+        {
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.header_row,parent,false)
+            return ViewHolderHeader(view)
+        }
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_row,parent,false)
         return AlphaNumViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: AlphaNumViewHolder, position: Int) {
-            holder.bind(alphaNums[position])
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when(holder){
+            is AlphaNumViewHolder -> { holder.bind(alphaNums[position-1])}
+            is ViewHolderHeader -> {}
+        }
     }
 
     override fun getItemCount(): Int {
-        return alphaNums.size
+        return alphaNums.size + 1
     }
 
 
@@ -35,4 +52,7 @@ class AlphaNumAdapter(var alphaNums : List<AlphaNum>) : RecyclerView.Adapter<Alp
 
         }
     }
+
+    inner class ViewHolderHeader(itemView : View) : RecyclerView.ViewHolder(itemView)
+
 }
